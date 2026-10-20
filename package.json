@@ -1,0 +1,13 @@
+{
+  "name": "sit-arequipa-mvc-inner",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node ../scripts/dev.js",
+    "start": "node ../scripts/dev.js",
+    "build": "node ../scripts/build.js",
+    "test": "node ../scripts/test.js",
+    "clean": "node ../scripts/clean.js",
+    "stop": "node ../scripts/stop.js"
+  }
+}

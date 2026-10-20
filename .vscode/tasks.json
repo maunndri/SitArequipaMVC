@@ -1,0 +1,39 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "npm: dev",
+            "type": "shell",
+            "command": "npm run dev",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "npm: build",
+            "type": "shell",
+            "command": "npm run build",
+            "problemMatcher": []
+        },
+        {
+            "label": "npm: test",
+            "type": "shell",
+            "command": "npm test",
+            "problemMatcher": []
+        },
+        {
+            "label": "npm: stop",
+            "type": "shell",
+            "command": "npm run stop",
+            "problemMatcher": []
+        },
+        {
+            "label": "npm: clean",
+            "type": "shell",
+            "command": "npm run clean",
+            "problemMatcher": []
+        }
+    ]
+}
