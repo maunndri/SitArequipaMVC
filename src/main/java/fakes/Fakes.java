@@ -26,7 +26,7 @@ public final class Fakes {
     }
 
     public static class TarjetaFake implements TarjetaDAO {
-        public final Map<String, Tarjeta> datos = new HashMap<>();
+        public final Map<String, Tarjeta> datos = new LinkedHashMap<>();
         @Override public Optional<Tarjeta> buscarPorNumero(String n) { return Optional.ofNullable(datos.get(n)); }
         @Override public Optional<Tarjeta> buscarParaActualizar(String n) { return buscarPorNumero(n); }
         @Override public boolean existeActivaDePasajero(int id) {
@@ -34,13 +34,18 @@ public final class Fakes {
         }
         @Override public void insertar(Tarjeta t) { datos.put(t.getNumero(), t); }
         @Override public void actualizarSaldo(String n, BigDecimal s) { /* el objeto en memoria ya fue mutado */ }
+        @Override public List<Tarjeta> listarTodas() { return new ArrayList<>(datos.values()); }
     }
 
     public static class PasajeroFake implements PasajeroDAO {
-        public final Map<String, Pasajero> datos = new HashMap<>();
+        public final Map<String, Pasajero> datos = new LinkedHashMap<>();
         private int seq = 100;
         @Override public Optional<Pasajero> buscarPorDocumento(String d) { return Optional.ofNullable(datos.get(d)); }
+        @Override public Optional<Pasajero> buscarPorId(int id) {
+            return datos.values().stream().filter(p -> p.getIdPersona() == id).findFirst();
+        }
         @Override public Pasajero insertar(Pasajero p) { p.setIdPersona(++seq); datos.put(p.getDocumento(), p); return p; }
+        @Override public List<Pasajero> listarTodos() { return new ArrayList<>(datos.values()); }
     }
 
     public static class ComprobanteFake implements ComprobanteDAO {

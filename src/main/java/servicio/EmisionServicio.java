@@ -68,10 +68,10 @@ public class EmisionServicio {
             });
 
             if (tarjetaDAO.existeActivaDePasajero(pasajero.getIdPersona())) {
-                throw new NegocioException("El pasajero ya tiene una tarjeta activa.");
+                throw new NegocioException("El pasajero ya tiene una tarjeta activa asignada.");
             }
             if (tarjetaDAO.buscarPorNumero(numeroTarjeta).isPresent()) {
-                throw new NegocioException("La tarjeta no está disponible.");
+                throw new NegocioException("La tarjeta " + numeroTarjeta + " ya se encuentra registrada en el sistema.");
             }
 
             tarjetaDAO.insertar(new Tarjeta(numeroTarjeta, pasajero.getIdPersona(), s.perfil(),
@@ -79,8 +79,10 @@ public class EmisionServicio {
 
             String numeroComprobante = generador.siguiente("VTA");
             comprobanteDAO.insertar(numeroComprobante, "RECIBO", montoInicial);
-            ventaDAO.insertar(numeroTarjeta, operador.idPersona(), numeroComprobante, montoInicial);
-            bitacora.registrar(operador.idUsuario(), "EMITIR_TARJETA", "tarjeta:" + numeroTarjeta, ip);
+            int idOpPersona = (operador != null) ? operador.idPersona() : 1;
+            Integer idOpUsuario = (operador != null) ? operador.idUsuario() : 1;
+            ventaDAO.insertar(numeroTarjeta, idOpPersona, numeroComprobante, montoInicial);
+            bitacora.registrar(idOpUsuario, "EMITIR_TARJETA", "tarjeta:" + numeroTarjeta, ip);
 
             return new ResultadoEmision(numeroTarjeta, numeroComprobante, montoInicial);
         });

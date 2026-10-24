@@ -13,6 +13,7 @@ class ValidadorTest {
     @Test void tipoDocumentoDesconocidoEsRechazado() { assertThrows(ValidacionException.class, () -> Validador.documento("XYZ", "12345678")); }
 
     @Test void nombreAceptaTildesYEspacios() { assertEquals("María José", Validador.nombre("María José", "Nombres")); }
+    @Test void nombreAceptaEnyeYAcentos() { assertEquals("Iñigo Núñez", Validador.nombre("Iñigo Núñez", "Nombres")); }
     @Test void nombreConHtmlEsRechazado() { assertThrows(ValidacionException.class, () -> Validador.nombre("<script>alert(1)</script>", "Nombres")); }
     @Test void nombreConSqlEsRechazado() { assertThrows(ValidacionException.class, () -> Validador.nombre("Robert'); DROP TABLE tarjeta;--", "Nombres")); }
 
@@ -27,6 +28,8 @@ class ValidadorTest {
     @Test void montoNoNumericoEsRechazado() { assertThrows(ValidacionException.class, () -> Validador.monto("abc", false, Validador.MONTO_MAX_RECARGA)); }
 
     @Test void tarjetaSeNormalizaAMayusculas() { assertEquals("04-A3-1F0", Validador.numeroTarjeta("04-a3-1f0")); }
+    @Test void tarjetaAceptaUidConDosPuntos() { assertEquals("045A2BC1", Validador.numeroTarjeta("04:5A:2B:C1")); }
+    @Test void tarjetaAceptaFormatoCorto() { assertEquals("SIT01", Validador.numeroTarjeta("sit01")); }
     @Test void tarjetaConCaracteresRarosEsRechazada() { assertThrows(ValidacionException.class, () -> Validador.numeroTarjeta("04'; --")); }
 
     @Test void passwordDebilEsRechazada() { assertThrows(ValidacionException.class, () -> Validador.passwordFuerte("12345678")); }

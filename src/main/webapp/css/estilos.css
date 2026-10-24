@@ -13,3 +13,20 @@ a { color: #6ee7b7; }
 .alerta { padding: 12px; border-radius: 8px; margin: 12px 0; }
 .alerta.ok { background: #064e3b; border: 1px solid #10b981; }
 .alerta.error { background: #4c1d1d; border: 1px solid #ef4444; }
+
+.container.wide { max-width: 980px; }
+table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13.5px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #232834; vertical-align: middle; }
+th { background: #11141c; color: #9aa3af; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+tr:hover td { background: #1c202a; }
+.badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+.badge.activa { background: #064e3b; color: #34d399; }
+.badge.bloqueada { background: #4c1d1d; color: #f87171; }
+.badge.general { background: #1e3a8a; color: #bfdbfe; }
+.badge.universitario { background: #4c1d95; color: #e9d5ff; }
+.badge.escolar { background: #7c2d12; color: #fed7aa; }
+.saldo-positivo { font-weight: bold; color: #34d399; }
+.btn-accion { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 11.5px; text-decoration: none; background: #2b303b; color: #e6e8eb; margin-right: 4px; }
+.btn-accion:hover { background: #3b4252; color: #ffffff; }
+.buscador-wrap { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; margin-bottom: 8px; gap: 12px; }
+.buscador-wrap input { max-width: 320px; padding: 8px 12px; }

@@ -14,6 +14,8 @@ public class CabecerasSeguridadFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest rq, ServletResponse rs, FilterChain chain) throws IOException, ServletException {
+        rq.setCharacterEncoding("UTF-8");
+        rs.setCharacterEncoding("UTF-8");
         HttpServletRequest req = (HttpServletRequest) rq;
         HttpServletResponse resp = (HttpServletResponse) rs;
         resp.setHeader("X-Content-Type-Options", "nosniff");

@@ -16,6 +16,7 @@
             <li><a href="${pageContext.request.contextPath}/app/emision">Venta y emisión de tarjeta</a></li>
             <li><a href="${pageContext.request.contextPath}/app/recargas">Recargas</a></li>
             <li><a href="${pageContext.request.contextPath}/app/lector">Lector simulado</a></li>
+            <li><a href="${pageContext.request.contextPath}/app/tarjetas">Ver tarjetas activas</a></li>
         </ul>
     </c:if>
     <form action="${pageContext.request.contextPath}/logout" method="post">

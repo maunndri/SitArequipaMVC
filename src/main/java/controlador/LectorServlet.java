@@ -19,6 +19,8 @@ public class LectorServlet extends BaseServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        resp.setCharacterEncoding("UTF-8");
         try {
             int idRuta = parsearEntero(req.getParameter("idRuta"));
             ResultadoCobro r = contenedor().lector.cobrar(
@@ -27,7 +29,7 @@ public class LectorServlet extends BaseServlet {
             req.setAttribute("resultadoMensaje", r.mensaje());
             req.setAttribute("resultadoTarifa", r.tarifa());
             req.setAttribute("resultadoSaldo", r.saldoRestante());
-        } catch (SitException e) {
+        } catch (Throwable e) {
             req.setAttribute("error", util.ManejadorErrores.mensajeSeguro(e));
         }
         mostrar(req, resp, "lector.jsp");

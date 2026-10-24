@@ -38,6 +38,6 @@ public class LoginServlet extends BaseServlet {
     /** Cookie HttpOnly (inaccesible a JS), Secure (solo HTTPS) y SameSite=Strict (anti-CSRF). */
     private void cookie(HttpServletResponse resp, String valor, long maxAge) {
         resp.addHeader("Set-Cookie", AutenticacionFilter.COOKIE + "=" + valor + "; Path=/; Max-Age=" + maxAge
-            + "; HttpOnly; SameSite=Strict" + (contenedor().cookieSegura ? "; Secure" : ""));
+            + "; HttpOnly; SameSite=Lax" + (contenedor().cookieSegura ? "; Secure" : ""));
     }
 }

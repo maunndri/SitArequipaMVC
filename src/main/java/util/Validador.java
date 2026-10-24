@@ -9,22 +9,22 @@ public final class Validador {
     private Validador() {}
 
     private static final Pattern DNI       = Pattern.compile("\\d{8}");
-    private static final Pattern CE        = Pattern.compile("[A-Za-z0-9]{9,12}");
-    private static final Pattern NOMBRE    = Pattern.compile("[\\p{L}][\\p{L} '\\-]{1,99}");
+    private static final Pattern CE        = Pattern.compile("[A-Za-z0-9]{6,15}");
+    private static final Pattern NOMBRE    = Pattern.compile("[\\p{L}][\\p{L} '\\-]{0,99}");
     private static final Pattern EMAIL     = Pattern.compile("[A-Za-z0-9._%+\\-]{1,64}@[A-Za-z0-9.\\-]{1,190}\\.[A-Za-z]{2,}");
     private static final Pattern TELEFONO  = Pattern.compile("\\+?[0-9 ]{7,15}");
-    private static final Pattern TARJETA   = Pattern.compile("[A-Z0-9\\-]{6,30}");
-    private static final Pattern LECTOR    = Pattern.compile("[A-Z0-9\\-]{3,20}");
+    private static final Pattern TARJETA   = Pattern.compile("[A-Za-z0-9_:\\-\\s]{3,30}");
+    private static final Pattern LECTOR    = Pattern.compile("[A-Za-z0-9_\\-]{3,20}");
     private static final Pattern USUARIO   = Pattern.compile("[A-Za-z0-9_.\\-]{3,50}");
 
     public static final BigDecimal MONTO_MAX_RECARGA = new BigDecimal("500.00");
 
     public static String documento(String tipo, String valor) {
-        String v = requerido(valor, "El número de documento");
+        String v = requerido(valor, "El número de documento").replaceAll("\\s+", "");
         if ("DNI".equals(tipo)) {
-            if (!DNI.matcher(v).matches()) throw new ValidacionException("El DNI debe tener 8 dígitos.");
+            if (!DNI.matcher(v).matches()) throw new ValidacionException("El DNI debe tener exactamente 8 dígitos.");
         } else if ("CE".equals(tipo)) {
-            if (!CE.matcher(v).matches()) throw new ValidacionException("El carné de extranjería no es válido.");
+            if (!CE.matcher(v).matches()) throw new ValidacionException("El carné de extranjería debe tener entre 6 y 15 caracteres.");
         } else {
             throw new ValidacionException("Tipo de documento no soportado.");
         }
@@ -32,7 +32,7 @@ public final class Validador {
     }
 
     public static String nombre(String valor, String campo) {
-        String v = requerido(valor, campo);
+        String v = requerido(valor, campo).trim();
         if (!NOMBRE.matcher(v).matches()) throw new ValidacionException(campo + " contiene caracteres no permitidos.");
         return v;
     }
@@ -56,9 +56,9 @@ public final class Validador {
     }
 
     public static String numeroTarjeta(String valor) {
-        String v = requerido(valor, "El código de tarjeta").toUpperCase();
-        if (!TARJETA.matcher(v).matches()) throw new ValidacionException("El código de tarjeta no es válido.");
-        return v;
+        String v = requerido(valor, "El código de tarjeta").toUpperCase().trim();
+        if (!TARJETA.matcher(v).matches()) throw new ValidacionException("El código de tarjeta debe tener entre 3 y 30 caracteres alfanuméricos.");
+        return v.replaceAll("[:\\s]", "");
     }
 
     public static String idLector(String valor) {

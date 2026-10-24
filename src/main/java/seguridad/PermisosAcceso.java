@@ -15,6 +15,7 @@ public class PermisosAcceso {
         reglas.put("/app/emision",   EnumSet.of(Rol.ADMINISTRADOR, Rol.OPERADOR_PV));
         reglas.put("/app/recargas",  EnumSet.of(Rol.ADMINISTRADOR, Rol.OPERADOR_PV));
         reglas.put("/app/lector",    EnumSet.of(Rol.ADMINISTRADOR, Rol.OPERADOR_PV));
+        reglas.put("/app/tarjetas",  EnumSet.allOf(Rol.class));
     }
 
     public boolean permitido(String rutaSinContexto, Rol rol) {

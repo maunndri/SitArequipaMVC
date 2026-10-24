@@ -79,4 +79,28 @@ public class TarjetaDAOJdbc implements TarjetaDAO {
             throw new PersistenciaException("Error al actualizar saldo", e);
         }
     }
+
+    @Override
+    public java.util.List<Tarjeta> listarTodas() {
+        String sql = "SELECT numero_tarjeta, id_pasajero, id_perfil_tarifa, id_estado_tarjeta, saldo, fecha_emision "
+                   + "FROM tarjeta ORDER BY fecha_emision DESC, numero_tarjeta ASC";
+        java.util.List<Tarjeta> lista = new java.util.ArrayList<>();
+        try (ConexionBD.Sesion s = ConexionBD.abrir();
+             PreparedStatement ps = s.conexion().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                lista.add(new Tarjeta(
+                    rs.getString("numero_tarjeta"),
+                    rs.getInt("id_pasajero"),
+                    PerfilTarifa.desdeId(rs.getInt("id_perfil_tarifa")),
+                    EstadoTarjeta.desdeId(rs.getInt("id_estado_tarjeta")),
+                    rs.getBigDecimal("saldo"),
+                    rs.getDate("fecha_emision").toLocalDate()
+                ));
+            }
+            return lista;
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error al listar tarjetas", e);
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package dao;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import modelo.Tarjeta;
 
@@ -11,4 +12,5 @@ public interface TarjetaDAO {
     boolean existeActivaDePasajero(int idPasajero);
     void insertar(Tarjeta tarjeta);
     void actualizarSaldo(String numero, BigDecimal nuevoSaldo);
+    List<Tarjeta> listarTodas();
 }

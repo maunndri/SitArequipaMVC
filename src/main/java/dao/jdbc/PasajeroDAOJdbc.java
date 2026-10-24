@@ -39,6 +39,58 @@ public class PasajeroDAOJdbc implements PasajeroDAO {
     }
 
     @Override
+    public Optional<Pasajero> buscarPorId(int idPersona) {
+        String sql = "SELECT p.id_persona, p.tipo_documento, p.documento_identidad, p.nombres, "
+                   + "p.apellido_paterno, p.apellido_materno, p.email "
+                   + "FROM persona p JOIN pasajero pa ON pa.id_persona = p.id_persona "
+                   + "WHERE p.id_persona = ?";
+        try (ConexionBD.Sesion s = ConexionBD.abrir();
+             PreparedStatement ps = s.conexion().prepareStatement(sql)) {
+            ps.setInt(1, idPersona);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return Optional.empty();
+                Pasajero p = new Pasajero();
+                p.setIdPersona(rs.getInt("id_persona"));
+                p.setTipoDocumento(rs.getString("tipo_documento"));
+                p.setDocumento(rs.getString("documento_identidad"));
+                p.setNombres(rs.getString("nombres"));
+                p.setApellidoPaterno(rs.getString("apellido_paterno"));
+                p.setApellidoMaterno(rs.getString("apellido_materno"));
+                p.setEmail(rs.getString("email"));
+                return Optional.of(p);
+            }
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error al buscar pasajero por ID", e);
+        }
+    }
+
+    @Override
+    public java.util.List<Pasajero> listarTodos() {
+        String sql = "SELECT p.id_persona, p.tipo_documento, p.documento_identidad, p.nombres, "
+                   + "p.apellido_paterno, p.apellido_materno, p.email "
+                   + "FROM persona p JOIN pasajero pa ON pa.id_persona = p.id_persona";
+        java.util.List<Pasajero> lista = new java.util.ArrayList<>();
+        try (ConexionBD.Sesion s = ConexionBD.abrir();
+             PreparedStatement ps = s.conexion().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Pasajero p = new Pasajero();
+                p.setIdPersona(rs.getInt("id_persona"));
+                p.setTipoDocumento(rs.getString("tipo_documento"));
+                p.setDocumento(rs.getString("documento_identidad"));
+                p.setNombres(rs.getString("nombres"));
+                p.setApellidoPaterno(rs.getString("apellido_paterno"));
+                p.setApellidoMaterno(rs.getString("apellido_materno"));
+                p.setEmail(rs.getString("email"));
+                lista.add(p);
+            }
+            return lista;
+        } catch (SQLException e) {
+            throw new PersistenciaException("Error al listar pasajeros", e);
+        }
+    }
+
+    @Override
     public Pasajero insertar(Pasajero p) {
         String sqlPersona = "INSERT INTO persona (nombres, apellido_paterno, apellido_materno, tipo_documento, "
                           + "documento_identidad, email) VALUES (?, ?, ?, ?, ?, ?)";

@@ -18,12 +18,14 @@ public class RecargaServlet extends BaseServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        resp.setCharacterEncoding("UTF-8");
         try {
             ResultadoRecarga r = contenedor().recarga.recargar(
                 req.getParameter("numeroTarjeta"), req.getParameter("monto"), sesion(req), ip(req));
             req.setAttribute("exito", "Recarga registrada. Comprobante " + r.numeroComprobante()
                 + ". Saldo anterior S/ " + r.saldoAnterior() + " → saldo actual S/ " + r.saldoPosterior());
-        } catch (SitException e) {
+        } catch (Throwable e) {
             req.setAttribute("error", util.ManejadorErrores.mensajeSeguro(e));
         }
         mostrar(req, resp, "recarga.jsp");

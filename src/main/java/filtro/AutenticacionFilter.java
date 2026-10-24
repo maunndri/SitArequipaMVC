@@ -60,12 +60,23 @@ public class AutenticacionFilter implements Filter {
     private static boolean mismoOrigen(HttpServletRequest req) {
         if ("GET".equals(req.getMethod()) || "HEAD".equals(req.getMethod())) return true;
         String origin = req.getHeader("Origin");
-        if (origin == null) return true;
+        if (origin == null || origin.isBlank() || "null".equalsIgnoreCase(origin)) return true;
         try {
-            return req.getServerName().equalsIgnoreCase(URI.create(origin).getHost());
-        } catch (IllegalArgumentException e) {
+            URI originUri = URI.create(origin);
+            String originHost = originUri.getHost();
+            if (originHost == null || originHost.isBlank()) return true;
+            String serverName = req.getServerName();
+            if (serverName != null && serverName.equalsIgnoreCase(originHost)) return true;
+            if (isLocal(serverName) && isLocal(originHost)) return true;
             return false;
+        } catch (Exception e) {
+            return true;
         }
+    }
+
+    private static boolean isLocal(String host) {
+        if (host == null) return false;
+        return host.equalsIgnoreCase("localhost") || host.equals("127.0.0.1") || host.equals("::1") || host.equals("0:0:0:0:0:0:0:1");
     }
 
     @Override public void destroy() {}
