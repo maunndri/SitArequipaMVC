@@ -7,6 +7,7 @@ import dao.TarjetaDAO;
 import dao.Transaccion;
 import dao.VentaTarjetaDAO;
 import excepcion.NegocioException;
+import excepcion.ValidacionException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import modelo.EstadoTarjeta;
@@ -14,10 +15,18 @@ import modelo.Pasajero;
 import modelo.PerfilTarifa;
 import modelo.SesionUsuario;
 import modelo.Tarjeta;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import util.LogSeguroUtil;
 import util.Validador;
 
-/** RF-001 + RF-002: registra al pasajero (si no existe) y emite su tarjeta. */
+/**
+ * RF-001 + RF-002: registra al pasajero (si no existe) y emite su tarjeta.
+ * 2.7.3 y 2.7.4. Utiliza Apache Commons Lang (StringUtils) para validación defensiva y SLF4J / Logback.
+ */
 public class EmisionServicio {
+    private static final Logger LOG = LoggerFactory.getLogger(EmisionServicio.class);
 
     public record SolicitudEmision(String tipoDocumento, String documento, String nombres,
                                    String apellidoPaterno, String apellidoMaterno, String email,
@@ -42,6 +51,15 @@ public class EmisionServicio {
     }
 
     public ResultadoEmision emitir(SolicitudEmision s, SesionUsuario operador, String ip) {
+        // 2.7.3. Validación defensiva con commons-lang3 para blindar contra NullPointerException
+        if (s == null) throw new ValidacionException("La solicitud de emisión es obligatoria.");
+        if (StringUtils.isBlank(s.documento())) {
+            throw new ValidacionException("El número de documento es obligatorio.");
+        }
+        if ("DNI".equalsIgnoreCase(s.tipoDocumento()) && (!StringUtils.isNumeric(s.documento()) || s.documento().length() != 8)) {
+            throw new ValidacionException("El DNI debe tener exactamente 8 dígitos.");
+        }
+
         // 1) Validar TODAS las entradas antes de tocar la base de datos
         String doc = Validador.documento(s.tipoDocumento(), s.documento());
         String nombres = Validador.nombre(s.nombres(), "Los nombres");
@@ -83,6 +101,9 @@ public class EmisionServicio {
             Integer idOpUsuario = (operador != null) ? operador.idUsuario() : 1;
             ventaDAO.insertar(numeroTarjeta, idOpPersona, numeroComprobante, montoInicial);
             bitacora.registrar(idOpUsuario, "EMITIR_TARJETA", "tarjeta:" + numeroTarjeta, ip);
+
+            LOG.info("Emisión de tarjeta exitosa - Tarjeta: {}, Perfil: {}, Monto Inicial: S/ {}, Comprobante: {}",
+                LogSeguroUtil.enmascararTarjeta(numeroTarjeta), s.perfil(), montoInicial, numeroComprobante);
 
             return new ResultadoEmision(numeroTarjeta, numeroComprobante, montoInicial);
         });

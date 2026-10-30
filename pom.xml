@@ -33,6 +33,56 @@
       <artifactId>postgresql</artifactId>
       <version>42.7.3</version>
     </dependency>
+
+    <!-- 2.7.1. Google Guava: Colecciones Inmutables y Caché en Memoria -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>31.1-jre</version>
+    </dependency>
+
+    <!-- 2.7.2. Apache POI: Generación de Reportes y Liquidaciones en Streaming (SXSSF) -->
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>5.2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>5.2.3</version>
+    </dependency>
+
+    <!-- 2.7.3. Apache Commons: Utilidades Defensivas (commons-lang3, commons-io) -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.12.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.11.0</version>
+    </dependency>
+
+    <!-- 2.7.4. Logback y SLF4J: Registro y Auditoría Transaccional -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.4.7</version>
+    </dependency>
+    <!-- Puente para que librerías como Apache POI deriven sus logs a SLF4J / Logback -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-to-slf4j</artifactId>
+      <version>2.20.0</version>
+    </dependency>
+
     <!-- Pruebas -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -44,6 +94,20 @@
 
   <build>
     <finalName>SitArequipaMVC</finalName>
+    <pluginManagement>
+      <plugins>
+        <!-- 2.8.1. Análisis de Composición de Software (SCA y CVEs) con OWASP -->
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>8.4.0</version>
+          <configuration>
+            <failBuildOnCVSS>7.0</failBuildOnCVSS>
+            <skipTestScope>true</skipTestScope>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>

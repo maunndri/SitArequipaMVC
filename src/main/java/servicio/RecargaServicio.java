@@ -11,10 +11,17 @@ import java.math.BigDecimal;
 import modelo.Recarga;
 import modelo.SesionUsuario;
 import modelo.Tarjeta;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import util.LogSeguroUtil;
 import util.Validador;
 
-/** RF-003: recarga atómica con saldo anterior y posterior (trazabilidad). */
+/**
+ * RF-003: recarga atómica con saldo anterior y posterior (trazabilidad).
+ * 2.7.4 y 2.8.2. Bitácora de auditoría legal de recargas con enmascaramiento Zero-Leak.
+ */
 public class RecargaServicio {
+    private static final Logger LOG = LoggerFactory.getLogger(RecargaServicio.class);
 
     public record ResultadoRecarga(String numeroComprobante, BigDecimal saldoAnterior, BigDecimal saldoPosterior) {}
 
@@ -52,6 +59,8 @@ public class RecargaServicio {
             comprobanteDAO.insertar(comprobante, "RECIBO", monto);
             recargaDAO.insertar(new Recarga(numero, operador.idPersona(), comprobante, monto, saldoAnterior, tarjeta.getSaldo()));
             bitacora.registrar(operador.idUsuario(), "RECARGA", "tarjeta:" + numero, ip);
+            LOG.info("Recarga exitosa - Tarjeta: {}, Monto: S/ {}, Saldo anterior: S/ {}, Saldo nuevo: S/ {}, Comprobante: {}",
+                LogSeguroUtil.enmascararTarjeta(numero), monto, saldoAnterior, tarjeta.getSaldo(), comprobante);
             return new ResultadoRecarga(comprobante, saldoAnterior, tarjeta.getSaldo());
         });
 

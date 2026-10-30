@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <!-- Propiedad de ruta base de logs (Sección 2.7.4 y 2.8.5) -->
+    <property name="LOG_DIR" value="${user.home}/logs/sit-arequipa" />
+
+    <!-- 1. Appender para consola estándar -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 2. Appender rotativo con particionamiento por tamaño y tiempo (Sección 2.8.5) -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/sit-arequipa.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Compresión automática en .gz diaria y por fragmento -->
+            <fileNamePattern>${LOG_DIR}/sit-arequipa-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- Límite de 10 MB por archivo de bitácora -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- Historial de retención legal de 30 días -->
+            <maxHistory>30</maxHistory>
+            <!-- Cuota global máxima de almacenamiento de 2 GB -->
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Nivel raíz: INFO para registrar eventos transaccionales y auditoría -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+
+</configuration>

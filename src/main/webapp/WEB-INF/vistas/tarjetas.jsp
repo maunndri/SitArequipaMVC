@@ -11,7 +11,10 @@
 <div class="container wide">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <h1>Tarjetas Activas y Pasajeros</h1>
-        <a href="${pageContext.request.contextPath}/app/emision" class="btn-accion" style="padding: 9px 14px; background: #10b981; color: #04130d; font-weight: bold;">+ Emitir nueva</a>
+        <div style="display: flex; gap: 8px;">
+            <a href="${pageContext.request.contextPath}/app/reporte" class="btn-accion" style="padding: 9px 14px; background: #2563eb; color: #ffffff; font-weight: bold;">📊 Exportar Excel (POI)</a>
+            <a href="${pageContext.request.contextPath}/app/emision" class="btn-accion" style="padding: 9px 14px; background: #10b981; color: #04130d; font-weight: bold;">+ Emitir nueva</a>
+        </div>
     </div>
     <p><a href="${pageContext.request.contextPath}/app/dashboard">&larr; Volver al inicio</a></p>
 

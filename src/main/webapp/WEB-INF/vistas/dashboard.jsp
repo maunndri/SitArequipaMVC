@@ -17,6 +17,7 @@
             <li><a href="${pageContext.request.contextPath}/app/recargas">Recargas</a></li>
             <li><a href="${pageContext.request.contextPath}/app/lector">Lector simulado</a></li>
             <li><a href="${pageContext.request.contextPath}/app/tarjetas">Ver tarjetas activas</a></li>
+            <li><a href="${pageContext.request.contextPath}/app/reporte">Descargar Liquidación (Excel POI SXSSF)</a></li>
         </ul>
     </c:if>
     <form action="${pageContext.request.contextPath}/logout" method="post">

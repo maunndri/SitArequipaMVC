@@ -16,10 +16,17 @@ import modelo.Ruta;
 import modelo.SesionUsuario;
 import modelo.Tarjeta;
 import modelo.Viaje;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import util.LogSeguroUtil;
 import util.Validador;
 
-/** RF-004: lector simulado. Valida estado y saldo, descuenta la tarifa y registra viaje o rechazo. */
+/**
+ * RF-004: lector simulado. Valida estado y saldo, descuenta la tarifa y registra viaje o rechazo.
+ * 2.7.4 y 2.8.2. Registro y Auditoría Transaccional vía SLF4J / Logback con política Zero-Leak.
+ */
 public class LectorServicio {
+    private static final Logger LOG = LoggerFactory.getLogger(LectorServicio.class);
 
     public record ResultadoCobro(boolean aprobado, MotivoRechazo motivo, BigDecimal tarifa, BigDecimal saldoRestante) {
         public String mensaje() {
@@ -45,6 +52,9 @@ public class LectorServicio {
         String numero = Validador.numeroTarjeta(uid);
         String idLector = Validador.idLector(idLectorTexto);
 
+        LOG.info("Iniciando cobro - Tarjeta: {}, Ruta: {}, Lector: {}",
+            LogSeguroUtil.enmascararTarjeta(numero), idRuta, LogSeguroUtil.sanitizarCRLF(idLector));
+
         Ruta ruta = rutaDAO.buscarPorId(idRuta).filter(Ruta::isActiva)
             .orElseThrow(() -> new NegocioException("La ruta seleccionada no está disponible."));
         if (!lectorDAO.existe(idLector)) throw new NegocioException("El lector seleccionado no existe.");
@@ -53,6 +63,7 @@ public class LectorServicio {
             Optional<Tarjeta> encontrada = tarjetaDAO.buscarParaActualizar(numero);
             if (encontrada.isEmpty()) {
                 // Sin tarjeta no existe FK para viaje: solo se audita.
+                LOG.warn("Rechazo de pasaje - Tarjeta inexistente: {}", LogSeguroUtil.enmascararTarjeta(numero));
                 bitacora.registrar(operador.idUsuario(), "COBRO_RECHAZADO_INEXISTENTE", "tarjeta:" + numero, ip);
                 return new ResultadoCobro(false, MotivoRechazo.TARJETA_INEXISTENTE, BigDecimal.ZERO, BigDecimal.ZERO);
             }
@@ -69,6 +80,7 @@ public class LectorServicio {
             }
 
             if (motivo != null) {
+                LOG.warn("Rechazo de pasaje por {} - Tarjeta: {}", motivo, LogSeguroUtil.enmascararTarjeta(numero));
                 int idViaje = viajeDAO.insertar(new Viaje(numero, idLector, ruta.getId(), EstadoViaje.RECHAZADO, tarifa));
                 viajeDAO.insertarRechazo(idViaje, motivo);
                 bitacora.registrar(operador.idUsuario(), "COBRO_RECHAZADO", "tarjeta:" + numero, ip);
@@ -79,6 +91,8 @@ public class LectorServicio {
             tarjetaDAO.actualizarSaldo(numero, tarjeta.getSaldo());
             viajeDAO.insertar(new Viaje(numero, idLector, ruta.getId(), EstadoViaje.APROBADO, tarifa));
             bitacora.registrar(operador.idUsuario(), "COBRO_APROBADO", "tarjeta:" + numero, ip);
+            LOG.info("Cobro exitoso - Tarjeta: {}, Nuevo Saldo: S/ {}",
+                LogSeguroUtil.enmascararTarjeta(numero), tarjeta.getSaldo());
             return new ResultadoCobro(true, null, tarifa, tarjeta.getSaldo());
         });
     }

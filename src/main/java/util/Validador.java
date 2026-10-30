@@ -3,8 +3,12 @@ package util;
 import excepcion.ValidacionException;
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 
-/** Validación centralizada de TODA entrada del usuario (lista blanca, longitud y formato). */
+/**
+ * Validación centralizada de TODA entrada del usuario (lista blanca, longitud y formato).
+ * 2.7.3. Emplea Apache Commons Lang (StringUtils) para validación defensiva contra NullPointerException.
+ */
 public final class Validador {
     private Validador() {}
 
@@ -22,7 +26,9 @@ public final class Validador {
     public static String documento(String tipo, String valor) {
         String v = requerido(valor, "El número de documento").replaceAll("\\s+", "");
         if ("DNI".equals(tipo)) {
-            if (!DNI.matcher(v).matches()) throw new ValidacionException("El DNI debe tener exactamente 8 dígitos.");
+            if (!StringUtils.isNumeric(v) || !DNI.matcher(v).matches()) {
+                throw new ValidacionException("El DNI debe tener exactamente 8 dígitos.");
+            }
         } else if ("CE".equals(tipo)) {
             if (!CE.matcher(v).matches()) throw new ValidacionException("El carné de extranjería debe tener entre 6 y 15 caracteres.");
         } else {
@@ -32,25 +38,25 @@ public final class Validador {
     }
 
     public static String nombre(String valor, String campo) {
-        String v = requerido(valor, campo).trim();
+        String v = requerido(valor, campo);
         if (!NOMBRE.matcher(v).matches()) throw new ValidacionException(campo + " contiene caracteres no permitidos.");
         return v;
     }
 
     public static String nombreOpcional(String valor, String campo) {
-        return (valor == null || valor.isBlank()) ? null : nombre(valor, campo);
+        return StringUtils.isBlank(valor) ? null : nombre(valor, campo);
     }
 
     public static String email(String valor) {
-        if (valor == null || valor.isBlank()) return null;           // opcional
-        String v = valor.trim();
+        if (StringUtils.isBlank(valor)) return null;           // opcional
+        String v = StringUtils.trimToEmpty(valor);
         if (v.length() > 150 || !EMAIL.matcher(v).matches()) throw new ValidacionException("El correo no es válido.");
         return v;
     }
 
     public static String telefono(String valor) {
-        if (valor == null || valor.isBlank()) return null;           // opcional
-        String v = valor.trim();
+        if (StringUtils.isBlank(valor)) return null;           // opcional
+        String v = StringUtils.trimToEmpty(valor);
         if (!TELEFONO.matcher(v).matches()) throw new ValidacionException("El teléfono no es válido.");
         return v;
     }
@@ -68,7 +74,7 @@ public final class Validador {
     }
 
     public static String username(String valor) {
-        String v = valor == null ? "" : valor.trim();
+        String v = StringUtils.trimToEmpty(valor);
         if (!USUARIO.matcher(v).matches()) throw new ValidacionException("Usuario no válido.");
         return v;
     }
@@ -103,7 +109,7 @@ public final class Validador {
     }
 
     private static String requerido(String valor, String campo) {
-        if (valor == null || valor.isBlank()) throw new ValidacionException(campo + " es obligatorio.");
-        return valor.trim();
+        if (StringUtils.isBlank(valor)) throw new ValidacionException(campo + " es obligatorio.");
+        return StringUtils.trimToEmpty(valor);
     }
 }
