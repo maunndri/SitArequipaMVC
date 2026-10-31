@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 public class BitacoraDAOJdbc implements BitacoraDAO {
-    @Override
+    @Override /*Hola yo soy groot*/
     public void registrar(Integer idUsuario, String accion, String entidad, String ip) {
         String sql = "INSERT INTO bitacora (id_usuario, accion, entidad, ip) VALUES (?, ?, ?, ?)";
         try (ConexionBD.Sesion s = ConexionBD.abrir();
