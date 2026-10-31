@@ -37,11 +37,15 @@ public class TarifaCacheServicio {
 
     public BigDecimal calcularTarifa(Ruta ruta, PerfilTarifa perfil) {
         if (ruta == null) return BigDecimal.ZERO;
-        BigDecimal base = ruta.getTarifaBase() != null ? ruta.getTarifaBase() : BigDecimal.ZERO;
-        if (perfil == PerfilTarifa.UNIVERSITARIO || perfil == PerfilTarifa.ESCOLAR) {
-            return base.multiply(new BigDecimal("0.50")).setScale(2, java.math.RoundingMode.HALF_UP);
+        if (perfil == PerfilTarifa.UNIVERSITARIO) {
+            return PerfilTarifa.UNIVERSITARIO.getTarifa();
         }
-        return base;
+        if (perfil == PerfilTarifa.ESCOLAR) {
+            return PerfilTarifa.ESCOLAR.getTarifa();
+        }
+        return (ruta.getTarifaBase() != null && ruta.getTarifaBase().compareTo(BigDecimal.ZERO) > 0)
+            ? ruta.getTarifaBase()
+            : PerfilTarifa.GENERAL.getTarifa();
     }
 
     public Cache<String, BigDecimal> getCache() {

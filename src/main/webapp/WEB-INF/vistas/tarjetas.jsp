@@ -90,8 +90,7 @@
                                     <c:out value="${t.fechaEmision()}"/>
                                 </td>
                                 <td style="text-align: right; white-space: nowrap;">
-                                    <a href="${pageContext.request.contextPath}/app/recargas" class="btn-accion" title="Recargar saldo">Recargar</a>
-                                    <a href="${pageContext.request.contextPath}/app/lector" class="btn-accion" title="Simular cobro">Cobrar</a>
+                                    <a href="${pageContext.request.contextPath}/app/recargas" class="btn-accion">Recargar</a>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -105,13 +104,14 @@
 <script>
 function filtrarTabla() {
     var input = document.getElementById("filtroTarjetas");
-    var filter = input.value.toLowerCase();
+    var filter = input.value.toLowerCase().trim();
     var table = document.getElementById("tablaTarjetas");
     if (!table) return;
     var tr = table.getElementsByTagName("tr");
+
     for (var i = 1; i < tr.length; i++) {
-        var text = tr[i].innerText || tr[i].textContent;
-        if (text.toLowerCase().indexOf(filter) > -1) {
+        var textoFila = tr[i].innerText || tr[i].textContent;
+        if (textoFila.toLowerCase().indexOf(filter) > -1) {
             tr[i].style.display = "";
         } else {
             tr[i].style.display = "none";

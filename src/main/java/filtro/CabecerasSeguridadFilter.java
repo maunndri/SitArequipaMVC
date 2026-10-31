@@ -22,7 +22,7 @@ public class CabecerasSeguridadFilter implements Filter {
         resp.setHeader("X-Frame-Options", "DENY");
         resp.setHeader("Referrer-Policy", "no-referrer");
         resp.setHeader("Content-Security-Policy",
-            "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; "
+            "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; "
             + "form-action 'self'; frame-ancestors 'none'; base-uri 'self'");
         if (req.isSecure()) {
             resp.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");

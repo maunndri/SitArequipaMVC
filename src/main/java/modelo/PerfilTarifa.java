@@ -1,11 +1,23 @@
 package modelo;
 
+import java.math.BigDecimal;
+
 public enum PerfilTarifa {
-    GENERAL(1), UNIVERSITARIO(2), ESCOLAR(3);
+    GENERAL(1, new BigDecimal("1.30")),
+    UNIVERSITARIO(2, new BigDecimal("0.70")),
+    ESCOLAR(3, new BigDecimal("0.50"));
 
     private final int id;
-    PerfilTarifa(int id) { this.id = id; }
+    private final BigDecimal tarifa;
+
+    PerfilTarifa(int id, BigDecimal tarifa) {
+        this.id = id;
+        this.tarifa = tarifa;
+    }
+
     public int getId() { return id; }
+
+    public BigDecimal getTarifa() { return tarifa; }
 
     public static PerfilTarifa desdeId(int id) {
         for (PerfilTarifa p : values()) if (p.id == id) return p;

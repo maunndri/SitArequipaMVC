@@ -9,12 +9,14 @@
 </head>
 <body>
 <div class="container narrow">
-    <h1>SIT Arequipa</h1>
-    <p class="sub">Ingreso al sistema</p>
+    <div style="text-align: center; margin-bottom: 12px;">
+        <img src="${pageContext.request.contextPath}/img/logo-sit.png" alt="SIT Arequipa" class="logo-login" width="220" height="124" style="width: 220px; max-width: 100%; height: auto; display: block; margin: 0 auto;">
+    </div>
+    <p class="sub" style="text-align: center;">Ingreso al sistema</p>
     <c:if test="${not empty error}"><div class="alerta error"><c:out value="${error}"/></div></c:if>
     <form action="${pageContext.request.contextPath}/login" method="post" autocomplete="off">
         <label for="username">Usuario</label>
-        <input id="username" type="text" name="username" maxlength="50" required>
+        <input id="username" type="text" name="username" maxlength="50" required autofocus>
         <label for="password">Contraseña</label>
         <input id="password" type="password" name="password" maxlength="100" required>
         <button type="submit">Ingresar</button>

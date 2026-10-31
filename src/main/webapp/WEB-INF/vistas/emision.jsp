@@ -39,8 +39,8 @@
         <small style="color: #9aa3af; display: block; margin-top: 4px;">Código autogenerado por el sistema. Puedes cambiarlo o generar uno nuevo con el botón.</small>
         <label for="perfil">Perfil de tarifa</label>
         <select id="perfil" name="perfil">
-            <option value="GENERAL" ${empty param.perfil || param.perfil == 'GENERAL' ? 'selected' : ''}>General (S/ 1.00)</option>
-            <option value="UNIVERSITARIO" ${param.perfil == 'UNIVERSITARIO' ? 'selected' : ''}>Universitario (S/ 0.50)</option>
+            <option value="GENERAL" ${empty param.perfil || param.perfil == 'GENERAL' ? 'selected' : ''}>General (S/ 1.30)</option>
+            <option value="UNIVERSITARIO" ${param.perfil == 'UNIVERSITARIO' ? 'selected' : ''}>Universitario (S/ 0.70)</option>
             <option value="ESCOLAR" ${param.perfil == 'ESCOLAR' ? 'selected' : ''}>Escolar (S/ 0.50)</option>
         </select>
         <label for="montoInicial">Monto de carga inicial (S/)</label>

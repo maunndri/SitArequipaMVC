@@ -8,7 +8,12 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 </head>
 <body>
-<div class="container">
+<div class="logo-dashboard-wrap" style="max-width: 760px; margin: 28px auto -18px auto; padding: 0 4px;">
+    <a href="${pageContext.request.contextPath}/app/dashboard">
+        <img src="${pageContext.request.contextPath}/img/logo-sit.png" alt="SIT Arequipa" class="logo-dashboard" height="65" width="116" style="height: 65px; width: auto; display: block;">
+    </a>
+</div>
+<div class="container" style="margin-top: 14px;">
     <h1>Centro de Control SIT</h1>
     <p class="sub">Sesión: <c:out value="${nombreUsuario}"/> (<c:out value="${rolUsuario}"/>)</p>
     <c:if test="${rolUsuario ne 'PERSONAL_CONTROL'}">

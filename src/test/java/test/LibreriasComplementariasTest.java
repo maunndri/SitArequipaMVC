@@ -56,22 +56,26 @@ class LibreriasComplementariasTest {
     @DisplayName("Guava: CacheBuilder almacena tarifas en memoria y registra estadísticas de acierto")
     void testGuavaCacheTarifas() {
         TarifaCacheServicio cacheServicio = new TarifaCacheServicio();
-        Ruta rutaTroncal = new Ruta(1, "TRONCAL-C1", "Río Seco - Socabaya", new BigDecimal("1.00"), true);
+        Ruta rutaTroncal = new Ruta(1, "TRONCAL-C1", "Río Seco - Socabaya", new BigDecimal("1.30"), true);
 
         // Primera consulta: cálculo e inserción en caché
         BigDecimal tarifaGeneral = cacheServicio.obtenerTarifa(rutaTroncal, PerfilTarifa.GENERAL);
-        assertEquals(new BigDecimal("1.00"), tarifaGeneral);
+        assertEquals(new BigDecimal("1.30"), tarifaGeneral);
 
         // Segunda consulta: debe servirse desde la caché de Guava
         BigDecimal tarifaGeneralCacheada = cacheServicio.obtenerTarifa(rutaTroncal, PerfilTarifa.GENERAL);
-        assertEquals(new BigDecimal("1.00"), tarifaGeneralCacheada);
+        assertEquals(new BigDecimal("1.30"), tarifaGeneralCacheada);
 
-        // Tarifa universitario: 50%
+        // Tarifa universitario: S/ 0.70
         BigDecimal tarifaUniv = cacheServicio.obtenerTarifa(rutaTroncal, PerfilTarifa.UNIVERSITARIO);
-        assertEquals(new BigDecimal("0.50"), tarifaUniv);
+        assertEquals(new BigDecimal("0.70"), tarifaUniv);
+
+        // Tarifa escolar: S/ 0.50
+        BigDecimal tarifaEscolar = cacheServicio.obtenerTarifa(rutaTroncal, PerfilTarifa.ESCOLAR);
+        assertEquals(new BigDecimal("0.50"), tarifaEscolar);
 
         // Verificar que la caché registra elementos
-        assertTrue(cacheServicio.getCache().size() >= 2);
+        assertTrue(cacheServicio.getCache().size() >= 3);
     }
 
     @Test

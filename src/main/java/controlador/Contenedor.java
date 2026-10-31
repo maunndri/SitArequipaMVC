@@ -73,7 +73,7 @@ public class Contenedor {
         usuarios.datos.put("operador", new Usuario(3, 3, "operador", hasher.hash("operador"), Rol.OPERADOR_PV, true));
 
         Fakes.RutaFake rutas = new Fakes.RutaFake();
-        rutas.datos.put(1, new modelo.Ruta(1, "TRONCAL-C1", "Río Seco - Socabaya", new java.math.BigDecimal("1.00"), true));
+        rutas.datos.put(1, new modelo.Ruta(1, "TRONCAL-C1", "Río Seco - Socabaya", new java.math.BigDecimal("1.30"), true));
         Fakes.LectorFake lectores = new Fakes.LectorFake();
         lectores.ids.add("LECTOR-001");
 

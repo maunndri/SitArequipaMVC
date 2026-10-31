@@ -91,6 +91,22 @@ class LectorServicioTest {
         assertThrows(NegocioException.class, () -> servicio.cobrar("04-A3-1F", 1, "LECTOR-999", operador, "ip"));
     }
 
+    @Test void tarjetaUniversitariaDescuentaTarifaDiferenciada70Centavos() {
+        tarjetas.datos.put("04-UNI-01", new Tarjeta("04-UNI-01", 102, PerfilTarifa.UNIVERSITARIO, EstadoTarjeta.ACTIVA, new BigDecimal("2.00"), LocalDate.now()));
+        var r = servicio.cobrar("04-UNI-01", 1, "LECTOR-001", operador, "ip");
+        assertTrue(r.aprobado());
+        assertEquals(new BigDecimal("0.70"), r.tarifa());
+        assertEquals(new BigDecimal("1.30"), r.saldoRestante());
+    }
+
+    @Test void tarjetaEscolarDescuentaTarifaDiferenciada50Centavos() {
+        tarjetas.datos.put("04-ESC-01", new Tarjeta("04-ESC-01", 103, PerfilTarifa.ESCOLAR, EstadoTarjeta.ACTIVA, new BigDecimal("2.00"), LocalDate.now()));
+        var r = servicio.cobrar("04-ESC-01", 1, "LECTOR-001", operador, "ip");
+        assertTrue(r.aprobado());
+        assertEquals(new BigDecimal("0.50"), r.tarifa());
+        assertEquals(new BigDecimal("1.50"), r.saldoRestante());
+    }
+
     @Test void laTarifaVieneDeLaPoliticaInyectada() {
         LectorServicio caro = new LectorServicio(tarjetas, rutas, lectores, viajes, bitacora,
             (ruta, perfil) -> new BigDecimal("2.00"), new Fakes.TransaccionDirecta());

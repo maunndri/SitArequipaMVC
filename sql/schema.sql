@@ -157,6 +157,7 @@ CREATE INDEX idx_recarga_fecha ON recarga(fecha);
 -- ======================= DATOS INICIALES =======================
 INSERT INTO rol (nombre_rol) VALUES ('ADMINISTRADOR'), ('OPERADOR_PV'), ('PERSONAL_CONTROL');
 INSERT INTO estado_tarjeta VALUES (1,'ACTIVA'), (2,'BLOQUEADA'), (3,'ANULADA');
+-- Catálogos de perfiles de tarifa oficiales SIT: 1: GENERAL (S/ 1.30), 2: UNIVERSITARIO (S/ 0.70), 3: ESCOLAR (S/ 0.50)
 INSERT INTO perfil_tarifa  VALUES (1,'GENERAL'), (2,'UNIVERSITARIO'), (3,'ESCOLAR');
 INSERT INTO tipo_comprobante (nombre_tipo) VALUES ('BOLETA'), ('FACTURA'), ('RECIBO');
 INSERT INTO estado_viaje   VALUES (1,'APROBADO'), (2,'RECHAZADO');
@@ -164,7 +165,7 @@ INSERT INTO motivo_rechazo VALUES (1,'Saldo insuficiente'), (2,'Tarjeta bloquead
                                   (3,'Tarjeta no registrada'), (4,'Tarjeta anulada');
 
 INSERT INTO ruta (codigo_ruta, nombre_ruta, tipo_ruta, color_hex, tarifa_base)
-VALUES ('TRONCAL-C1', 'Río Seco - Socabaya', 'Troncal', '#108981', 1.00);
+VALUES ('TRONCAL-C1', 'Río Seco - Socabaya', 'Troncal', '#108981', 1.30);
 INSERT INTO unidad (placa, modelo) VALUES ('ABC-123', 'Bus articulado demo');
 INSERT INTO lector_bus (id_lector, id_unidad) VALUES ('LECTOR-001', 1);
 
