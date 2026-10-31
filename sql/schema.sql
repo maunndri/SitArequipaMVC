@@ -1,5 +1,30 @@
 -- SIT Arequipa - esquema PostgreSQL (basado en el MER del informe)
--- Ejecutar con: psql -U postgres -d sitdb -f sql/schema.sql
+-- Ejecutar en pgAdmin (Query Tool) sobre la base de datos 'sitdb'
+-- o con: psql -U postgres -d sitdb -f sql/schema.sql
+
+DROP TABLE IF EXISTS registro_rechazo CASCADE;
+DROP TABLE IF EXISTS viaje CASCADE;
+DROP TABLE IF EXISTS lector_bus CASCADE;
+DROP TABLE IF EXISTS unidad CASCADE;
+DROP TABLE IF EXISTS paradero CASCADE;
+DROP TABLE IF EXISTS ruta CASCADE;
+DROP TABLE IF EXISTS recarga CASCADE;
+DROP TABLE IF EXISTS venta_tarjeta CASCADE;
+DROP TABLE IF EXISTS comprobante CASCADE;
+DROP TABLE IF EXISTS tarjeta CASCADE;
+DROP TABLE IF EXISTS motivo_rechazo CASCADE;
+DROP TABLE IF EXISTS estado_viaje CASCADE;
+DROP TABLE IF EXISTS tipo_comprobante CASCADE;
+DROP TABLE IF EXISTS perfil_tarifa CASCADE;
+DROP TABLE IF EXISTS estado_tarjeta CASCADE;
+DROP TABLE IF EXISTS bitacora CASCADE;
+DROP TABLE IF EXISTS usuario CASCADE;
+DROP TABLE IF EXISTS personal_control CASCADE;
+DROP TABLE IF EXISTS operador_punto_venta CASCADE;
+DROP TABLE IF EXISTS pasajero CASCADE;
+DROP TABLE IF EXISTS persona_telefono CASCADE;
+DROP TABLE IF EXISTS persona CASCADE;
+DROP TABLE IF EXISTS rol CASCADE;
 
 CREATE TABLE rol (
     id_rol      SERIAL PRIMARY KEY,
@@ -169,11 +194,23 @@ VALUES ('TRONCAL-C1', 'Río Seco - Socabaya', 'Troncal', '#108981', 1.30);
 INSERT INTO unidad (placa, modelo) VALUES ('ABC-123', 'Bus articulado demo');
 INSERT INTO lector_bus (id_lector, id_unidad) VALUES ('LECTOR-001', 1);
 
--- Usuarios de demostración. Contraseña inicial de AMBOS: Cambiar#2026  (CÁMBIELA antes de cualquier uso real)
--- Para generar otro hash:  java -cp target/classes util.GenerarHash "NuevaClave#2026"
+-- Usuarios del sistema:
+-- admin: password "admin"
+-- operador1: password "operador1"
 INSERT INTO persona (nombres, apellido_paterno, tipo_documento, documento_identidad)
 VALUES ('Administrador', 'SIT', 'DNI', '00000001'), ('Operador', 'Demo', 'DNI', '00000002');
 INSERT INTO operador_punto_venta (id_persona, punto_venta) VALUES (1, 'Oficina central'), (2, 'Terminal Río Seco');
 INSERT INTO usuario (id_persona, id_rol, username, password_hash) VALUES
- (1, (SELECT id_rol FROM rol WHERE nombre_rol='ADMINISTRADOR'), 'admin',     'pbkdf2$210000$1CZI9Z8avQqwJ11NoNG2UQ==$WgZPAQyRaX5BdP0kLECRnjtU4XRgCyaJdEc4NhyP4lk='),
- (2, (SELECT id_rol FROM rol WHERE nombre_rol='OPERADOR_PV'),   'operador1', 'pbkdf2$210000$1CZI9Z8avQqwJ11NoNG2UQ==$WgZPAQyRaX5BdP0kLECRnjtU4XRgCyaJdEc4NhyP4lk=');
+ (1, (SELECT id_rol FROM rol WHERE nombre_rol='ADMINISTRADOR'), 'admin',     'pbkdf2$210000$OgRueFBv4mFEgyEZkKDf3w==$UELKd0NWNvVAOmSQTIxhF1dPc3M4mi6Q0dwt4woflzU='),
+ (2, (SELECT id_rol FROM rol WHERE nombre_rol='OPERADOR_PV'),   'operador1', 'pbkdf2$210000$QCr9zawAi4vsS3DM+TAe6g==$2BHaAo2HD4Y5iGu5DRDSv+I4XvDOLFW8btHTMImNdN4=');
+
+-- Pasajeros y tarjetas de prueba iniciales
+INSERT INTO persona (nombres, apellido_paterno, apellido_materno, tipo_documento, documento_identidad, email)
+VALUES ('Carlos Alberto', 'Quispe', 'Mamani', 'DNI', '70123456', 'carlos.quispe@gmail.com'),
+       ('Lucía Elena', 'Flores', 'Vargas', 'DNI', '72987654', 'lucia.flores@utp.edu.pe');
+INSERT INTO persona_telefono (id_persona, telefono) VALUES (3, '958123456'), (4, '984567890');
+INSERT INTO pasajero (id_persona) VALUES (3), (4);
+
+INSERT INTO tarjeta (numero_tarjeta, id_pasajero, id_perfil_tarifa, id_estado_tarjeta, saldo, fecha_emision)
+VALUES ('SIT-100001', 3, 1, 1, 15.50, CURRENT_DATE - 3),
+       ('SIT-100002', 4, 2, 1, 8.00, CURRENT_DATE - 1);

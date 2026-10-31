@@ -15,8 +15,9 @@ public class PasajeroDAOJdbc implements PasajeroDAO {
     @Override
     public Optional<Pasajero> buscarPorDocumento(String documento) {
         String sql = "SELECT p.id_persona, p.tipo_documento, p.documento_identidad, p.nombres, "
-                   + "p.apellido_paterno, p.apellido_materno, p.email "
+                   + "p.apellido_paterno, p.apellido_materno, p.email, pt.telefono "
                    + "FROM persona p JOIN pasajero pa ON pa.id_persona = p.id_persona "
+                   + "LEFT JOIN persona_telefono pt ON pt.id_persona = p.id_persona "
                    + "WHERE p.documento_identidad = ?";
         try (ConexionBD.Sesion s = ConexionBD.abrir();
              PreparedStatement ps = s.conexion().prepareStatement(sql)) {
@@ -31,6 +32,7 @@ public class PasajeroDAOJdbc implements PasajeroDAO {
                 p.setApellidoPaterno(rs.getString("apellido_paterno"));
                 p.setApellidoMaterno(rs.getString("apellido_materno"));
                 p.setEmail(rs.getString("email"));
+                p.setTelefono(rs.getString("telefono"));
                 return Optional.of(p);
             }
         } catch (SQLException e) {
@@ -41,8 +43,9 @@ public class PasajeroDAOJdbc implements PasajeroDAO {
     @Override
     public Optional<Pasajero> buscarPorId(int idPersona) {
         String sql = "SELECT p.id_persona, p.tipo_documento, p.documento_identidad, p.nombres, "
-                   + "p.apellido_paterno, p.apellido_materno, p.email "
+                   + "p.apellido_paterno, p.apellido_materno, p.email, pt.telefono "
                    + "FROM persona p JOIN pasajero pa ON pa.id_persona = p.id_persona "
+                   + "LEFT JOIN persona_telefono pt ON pt.id_persona = p.id_persona "
                    + "WHERE p.id_persona = ?";
         try (ConexionBD.Sesion s = ConexionBD.abrir();
              PreparedStatement ps = s.conexion().prepareStatement(sql)) {
@@ -57,6 +60,7 @@ public class PasajeroDAOJdbc implements PasajeroDAO {
                 p.setApellidoPaterno(rs.getString("apellido_paterno"));
                 p.setApellidoMaterno(rs.getString("apellido_materno"));
                 p.setEmail(rs.getString("email"));
+                p.setTelefono(rs.getString("telefono"));
                 return Optional.of(p);
             }
         } catch (SQLException e) {
@@ -67,8 +71,9 @@ public class PasajeroDAOJdbc implements PasajeroDAO {
     @Override
     public java.util.List<Pasajero> listarTodos() {
         String sql = "SELECT p.id_persona, p.tipo_documento, p.documento_identidad, p.nombres, "
-                   + "p.apellido_paterno, p.apellido_materno, p.email "
-                   + "FROM persona p JOIN pasajero pa ON pa.id_persona = p.id_persona";
+                   + "p.apellido_paterno, p.apellido_materno, p.email, pt.telefono "
+                   + "FROM persona p JOIN pasajero pa ON pa.id_persona = p.id_persona "
+                   + "LEFT JOIN persona_telefono pt ON pt.id_persona = p.id_persona";
         java.util.List<Pasajero> lista = new java.util.ArrayList<>();
         try (ConexionBD.Sesion s = ConexionBD.abrir();
              PreparedStatement ps = s.conexion().prepareStatement(sql);
@@ -82,6 +87,7 @@ public class PasajeroDAOJdbc implements PasajeroDAO {
                 p.setApellidoPaterno(rs.getString("apellido_paterno"));
                 p.setApellidoMaterno(rs.getString("apellido_materno"));
                 p.setEmail(rs.getString("email"));
+                p.setTelefono(rs.getString("telefono"));
                 lista.add(p);
             }
             return lista;
