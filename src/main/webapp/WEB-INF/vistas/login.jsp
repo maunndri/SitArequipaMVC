@@ -15,6 +15,7 @@
     <p class="sub" style="text-align: center;">Ingreso al sistema</p>
     <c:if test="${not empty error}"><div class="alerta error"><c:out value="${error}"/></div></c:if>
     <form action="${pageContext.request.contextPath}/login" method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<c:out value='${csrfToken}'/>">
         <label for="username">Usuario</label>
         <input id="username" type="text" name="username" maxlength="50" required autofocus>
         <label for="password">Contraseña</label>

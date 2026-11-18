@@ -9,6 +9,37 @@
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
+    <!-- Cadena de filtros de seguridad (el orden de declaración = orden de ejecución):
+         1) Cabeceras (CSP, X-Frame-Options, nosniff...)  2) Token anti-CSRF  3) Autenticación JWT + roles -->
+    <filter>
+        <filter-name>CabecerasSeguridadFilter</filter-name>
+        <filter-class>filtro.CabecerasSeguridadFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>CsrfFilter</filter-name>
+        <filter-class>filtro.CsrfFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>AutenticacionFilter</filter-name>
+        <filter-class>filtro.AutenticacionFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CabecerasSeguridadFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>CsrfFilter</filter-name>
+        <url-pattern>/login</url-pattern>
+        <url-pattern>/logout</url-pattern>
+        <url-pattern>/app/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>AutenticacionFilter</filter-name>
+        <url-pattern>/app/*</url-pattern>
+    </filter-mapping>
+
     <!-- HTTPS obligatorio: Tomcat redirige HTTP -> HTTPS (connector redirectPort) -->
     <!-- HTTPS obligatorio temporalmente deshabilitado para pruebas locales -->
     <!--

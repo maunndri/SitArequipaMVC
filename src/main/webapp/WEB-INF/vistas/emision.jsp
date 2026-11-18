@@ -14,6 +14,7 @@
     <c:if test="${not empty error}"><div class="alerta error"><c:out value="${error}"/></div></c:if>
     <c:if test="${not empty exito}"><div class="alerta ok"><c:out value="${exito}"/></div></c:if>
     <form action="${pageContext.request.contextPath}/app/emision" method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<c:out value='${csrfToken}'/>">
         <label for="tipoDocumento">Tipo de documento</label>
         <select id="tipoDocumento" name="tipoDocumento">
             <option value="DNI" ${param.tipoDocumento == 'DNI' ? 'selected' : ''}>DNI</option>
@@ -34,7 +35,7 @@
         <label for="numeroTarjeta">Código UID de la tarjeta</label>
         <div style="display: flex; gap: 8px; align-items: stretch;">
             <input id="numeroTarjeta" type="text" name="numeroTarjeta" value="<c:out value='${not empty param.numeroTarjeta ? param.numeroTarjeta : uidSugerido}'/>" placeholder="Ej. SIT-100001" maxlength="30" style="flex: 1;" required>
-            <button type="button" class="secundario" style="margin-top: 0; white-space: nowrap; padding: 0 16px;" onclick="generarNuevoUID()">🎲 Generar otro</button>
+            <button type="button" id="btnGenerarUid" class="secundario" style="margin-top: 0; white-space: nowrap; padding: 0 16px;">🎲 Generar otro</button>
         </div>
         <small style="color: #9aa3af; display: block; margin-top: 4px;">Código autogenerado por el sistema. Puedes cambiarlo o generar uno nuevo con el botón.</small>
         <label for="perfil">Perfil de tarifa</label>
@@ -48,11 +49,6 @@
         <button type="submit">Registrar y emitir tarjeta</button>
     </form>
 </div>
-<script>
-function generarNuevoUID() {
-    var num = Math.floor(100000 + Math.random() * 900000);
-    document.getElementById('numeroTarjeta').value = 'SIT-' + num;
-}
-</script>
+<script src="${pageContext.request.contextPath}/js/emision.js"></script>
 </body>
 </html>

@@ -20,7 +20,7 @@
 
     <div class="buscador-wrap" style="margin-top: 16px;">
         <p class="sub" style="margin: 0;">Consulta de tarjetas emitidas vinculadas a sus respectivos usuarios titulares.</p>
-        <input type="text" id="filtroTarjetas" placeholder="🔍 Buscar por UID, nombre o DNI..." onkeyup="filtrarTabla()">
+        <input type="text" id="filtroTarjetas" placeholder="🔍 Buscar por UID, nombre o DNI...">
     </div>
 
     <c:choose>
@@ -101,23 +101,6 @@
     </c:choose>
 </div>
 
-<script>
-function filtrarTabla() {
-    var input = document.getElementById("filtroTarjetas");
-    var filter = input.value.toLowerCase().trim();
-    var table = document.getElementById("tablaTarjetas");
-    if (!table) return;
-    var tr = table.getElementsByTagName("tr");
-
-    for (var i = 1; i < tr.length; i++) {
-        var textoFila = tr[i].innerText || tr[i].textContent;
-        if (textoFila.toLowerCase().indexOf(filter) > -1) {
-            tr[i].style.display = "";
-        } else {
-            tr[i].style.display = "none";
-        }
-    }
-}
-</script>
+<script src="${pageContext.request.contextPath}/js/tarjetas.js"></script>
 </body>
 </html>

@@ -29,13 +29,18 @@ public class Contenedor {
     public final LectorServicio lector;
     public final TokenService tokens;
     public final PermisosAcceso permisos = new PermisosAcceso();
-    public final boolean cookieSegura = false;
+    public final CsrfTokens csrf;
+    /** Cookies con atributo Secure (solo HTTPS). Activar en producción: SIT_COOKIE_SECURE=true */
+    public final boolean cookieSegura;
     private final boolean baseDatosActiva;
 
     public Contenedor() {
         Clock reloj = Clock.systemUTC();
-        String secreto = "12345678901234567890123456789012";
+        // Security Misconfiguration (OWASP A05): el secreto NO va en el código fuente.
+        String secreto = secretoDesdeEntorno("SIT_JWT_SECRET");
         this.tokens = new JwtHs256TokenService(secreto, 8 * 3600, reloj);
+        this.csrf = new CsrfTokens(secretoDesdeEntorno("SIT_CSRF_SECRET"));
+        this.cookieSegura = Boolean.parseBoolean(leerConfig("SIT_COOKIE_SECURE", "false"));
 
         boolean usarBD = false;
         try (ConexionBD.Sesion s = ConexionBD.abrir()) {
@@ -132,6 +137,26 @@ public class Contenedor {
             this.lector = new LectorServicio(tarjetas, rutas, lectores,
                 new Fakes.ViajeFake(), bitacora, new PoliticaTarifaBase(), tx);
         }
+    }
+
+    /** Lee una variable de entorno o propiedad de sistema (-Dclave=valor). */
+    private static String leerConfig(String clave, String porDefecto) {
+        String v = System.getenv(clave);
+        if (v == null || v.isBlank()) v = System.getProperty(clave);
+        return (v == null || v.isBlank()) ? porDefecto : v.trim();
+    }
+
+    /**
+     * Secreto criptográfico desde el entorno. Si no está configurado (o es demasiado corto), se genera
+     * uno aleatorio en memoria: es seguro, pero las sesiones se invalidan al reiniciar el servidor.
+     */
+    private static String secretoDesdeEntorno(String clave) {
+        String v = leerConfig(clave, null);
+        if (v != null && v.getBytes(java.nio.charset.StandardCharsets.UTF_8).length >= 32) return v;
+        LOG.warn("{} no configurado (o < 32 bytes). Se usará un secreto aleatorio temporal.", clave);
+        byte[] b = new byte[48];
+        new java.security.SecureRandom().nextBytes(b);
+        return java.util.Base64.getEncoder().encodeToString(b);
     }
 
     public boolean isBaseDatosActiva() {

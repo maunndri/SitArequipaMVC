@@ -5,14 +5,13 @@ import excepcion.AutenticacionException;
 import java.io.IOException;
 import java.net.URI;
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.SesionUsuario;
 
 /** Autenticación (JWT) + autorización por rol para todo lo que cuelga de /app/*. */
-@WebFilter(urlPatterns = "/app/*")
+// Registrado en web.xml (después de CabecerasSeguridadFilter y CsrfFilter) para garantizar el orden.
 public class AutenticacionFilter implements Filter {
     public static final String COOKIE = "SIT_TOKEN";
     public static final String ATRIBUTO_SESION = "sesion";
@@ -56,21 +55,23 @@ public class AutenticacionFilter implements Filter {
         return null;
     }
 
-    /** En peticiones que modifican datos, el Origin (si viene) debe coincidir con el host del servidor. */
+    /**
+     * En peticiones que modifican datos, el Origin (o en su defecto el Referer) debe coincidir con el host
+     * del servidor ("Validar el origen de las solicitudes" - Semana 14). Complementa al token CSRF.
+     */
     private static boolean mismoOrigen(HttpServletRequest req) {
         if ("GET".equals(req.getMethod()) || "HEAD".equals(req.getMethod())) return true;
-        String origin = req.getHeader("Origin");
-        if (origin == null || origin.isBlank() || "null".equalsIgnoreCase(origin)) return true;
+        String origen = req.getHeader("Origin");
+        if (origen == null || origen.isBlank() || "null".equalsIgnoreCase(origen)) origen = req.getHeader("Referer");
+        if (origen == null || origen.isBlank()) return true;   // sin cabeceras: decide el token CSRF
         try {
-            URI originUri = URI.create(origin);
-            String originHost = originUri.getHost();
-            if (originHost == null || originHost.isBlank()) return true;
+            String originHost = URI.create(origen).getHost();
+            if (originHost == null || originHost.isBlank()) return false;
             String serverName = req.getServerName();
             if (serverName != null && serverName.equalsIgnoreCase(originHost)) return true;
-            if (isLocal(serverName) && isLocal(originHost)) return true;
-            return false;
+            return isLocal(serverName) && isLocal(originHost);
         } catch (Exception e) {
-            return true;
+            return false;                                       // cabecera malformada: se rechaza
         }
     }
 

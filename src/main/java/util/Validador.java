@@ -108,8 +108,22 @@ public final class Validador {
         }
     }
 
+    /**
+     * Verifica que un texto libre no contenga scripts ni etiquetas HTML maliciosas (Prevención XSS - Semana 14).
+     */
+    public static String sinScripts(String valor, String campo) {
+        String v = requerido(valor, campo);
+        if (SanitizadorHtml.contieneScript(v) || v.indexOf('<') >= 0 || v.indexOf('>') >= 0) {
+            throw new ValidacionException(campo + " no puede contener etiquetas HTML ni scripts.");
+        }
+        return v;
+    }
+
     private static String requerido(String valor, String campo) {
         if (StringUtils.isBlank(valor)) throw new ValidacionException(campo + " es obligatorio.");
+        if (SanitizadorHtml.contieneScript(valor)) {
+            throw new ValidacionException(campo + " contiene contenido potencialmente peligroso (scripts no permitidos).");
+        }
         return StringUtils.trimToEmpty(valor);
     }
 }

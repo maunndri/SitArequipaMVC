@@ -14,6 +14,7 @@
     <c:if test="${not empty error}"><div class="alerta error"><c:out value="${error}"/></div></c:if>
     <c:if test="${not empty exito}"><div class="alerta ok"><c:out value="${exito}"/></div></c:if>
     <form action="${pageContext.request.contextPath}/app/recargas" method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<c:out value='${csrfToken}'/>">
         <label for="numeroTarjeta">Código de tarjeta</label>
         <input id="numeroTarjeta" type="text" name="numeroTarjeta" maxlength="30" required>
         <label for="monto">Monto a recargar (S/)</label>

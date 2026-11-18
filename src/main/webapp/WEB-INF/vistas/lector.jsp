@@ -19,6 +19,7 @@
         </div>
     </c:if>
     <form action="${pageContext.request.contextPath}/app/lector" method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<c:out value='${csrfToken}'/>">
         <label for="uid">UID de la tarjeta</label>
         <input id="uid" type="text" name="uid" maxlength="30" required autofocus>
         <label for="idRuta">Ruta (id)</label>

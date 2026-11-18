@@ -26,6 +26,7 @@
         </ul>
     </c:if>
     <form action="${pageContext.request.contextPath}/logout" method="post">
+        <input type="hidden" name="_csrf" value="<c:out value='${csrfToken}'/>">
         <button type="submit" class="secundario">Cerrar sesión</button>
     </form>
 </div>
